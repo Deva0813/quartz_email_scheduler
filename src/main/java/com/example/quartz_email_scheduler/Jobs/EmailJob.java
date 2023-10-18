@@ -1,6 +1,5 @@
 package com.example.quartz_email_scheduler.Jobs;
 
-
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -8,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -36,7 +36,7 @@ public class EmailJob extends QuartzJobBean {
         String body = jobDataMap.getString("body");
         String recipientEmail = jobDataMap.getString("email");
 
-        sendMail(mailProperties.getUsername(), recipientEmail, subject, body);
+        sendMail("DC Billing 🎯<testserverpy0@gmail.com>", recipientEmail, subject, body);
     }
 
     private void sendMail(String fromEmail, String toEmail, String subject, String body) {
@@ -44,11 +44,17 @@ public class EmailJob extends QuartzJobBean {
             logger.info("Sending Email to {}", toEmail);
             MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message, StandardCharsets.UTF_8.toString());
+            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.toString());
             messageHelper.setSubject(subject);
             messageHelper.setText(body, true);
             messageHelper.setFrom(fromEmail);
             messageHelper.setTo(toEmail);
+
+            if (subject.equals("plan activated")) {
+                FileSystemResource pdfAttachment = new FileSystemResource("bill.pdf"); // Replace with the actual path
+                                                                                       // to your PDF file
+                messageHelper.addAttachment("bill.pdf", pdfAttachment);
+            }
 
             mailSender.send(message);
         } catch (MessagingException ex) {

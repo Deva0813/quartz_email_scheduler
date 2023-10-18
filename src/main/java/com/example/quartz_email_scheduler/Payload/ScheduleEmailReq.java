@@ -18,6 +18,8 @@ public class ScheduleEmailReq {
     @NotEmpty
     private String body;
 
+    private CustomerBill data;
+
     @NotNull
     private LocalDateTime dateTime;
 
@@ -63,4 +65,14 @@ public class ScheduleEmailReq {
     public void setTimeZone(ZoneId timeZone) {
         this.timeZone = timeZone;
     }
+
+    public CustomerBill getData() {
+        return data;
+    }
+
+    public void setData(CustomerBill data) {
+        this.data = data;
+    }
+
+
 }
